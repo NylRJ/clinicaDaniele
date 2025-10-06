@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:plataforma_daniela/features/landing/presentation/screens/landing_elegante.dart';
 import 'firebase_options.dart';
-import 'features/landing/presentation/screens/landing_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,8 +19,10 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Plataforma Terapêutica',
+      title: 'Reconstruir Clinic',
       theme: ThemeData(
+        textTheme: GoogleFonts.interTextTheme(),
+        primaryTextTheme: GoogleFonts.interTextTheme(),
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF5E60CE)),
         useMaterial3: true,
       ),
