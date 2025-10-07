@@ -8,12 +8,7 @@ class BrandLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final img = Image.asset(
-      'assets/logo_reconstruir.png',
-      width: size,
-      height: size,
-      fit: BoxFit.contain,
-    );
+    final img = Image.asset('assets/logo_reconstruir.png', width: size, height: size, fit: BoxFit.contain);
     if (!darkPlate) return img;
 
     return Container(
@@ -21,12 +16,9 @@ class BrandLogo extends StatelessWidget {
       decoration: BoxDecoration(
         color: BrandColors.charcoal,
         borderRadius: BorderRadius.circular(size * 0.18),
-        boxShadow: const [
-          BoxShadow(color: Color(0x22000000), blurRadius: 10, offset: Offset(0, 6)),
-        ],
+        boxShadow: const [BoxShadow(color: Color(0x22000000), blurRadius: 10, offset: Offset(0, 6))],
       ),
       child: img,
     );
   }
 }
-

@@ -15,8 +15,10 @@ class ProfessionalsSection extends StatelessWidget {
           spacing: 16,
           runSpacing: 16,
           children: [
-            ProCard(name: 'Daniele Gomes', role: 'Psic�loga | CRP 00/0000'),
-            ProCard(name: 'Ana Paula', role: 'Terapeuta Sist�mica'),
+            // CORRIGIDO AQUI
+            ProCard(name: 'Daniele Gomes', role: 'Psicóloga | CRP 00/0000'),
+            // CORRIGIDO AQUI
+            ProCard(name: 'Ana Paula', role: 'Terapeuta Sistêmica'),
             ProCard(name: 'Carlos Andrade', role: 'Psicoterapeuta Integrativo'),
           ],
         ),

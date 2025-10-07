@@ -35,11 +35,13 @@ class HeroSection extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Plataforma Integrada\nde Gest�o Terap�utica',
+                        // CORRIGIDO AQUI
+                        'Plataforma Integrada\nde Gestão Terapêutica',
                         style: GoogleFonts.playfairDisplay(fontSize: 42, height: 1.1, fontWeight: FontWeight.w700, color: BrandColors.charcoal),
                       ),
                       const SizedBox(height: 12),
-                      const Text('Conectamos pacientes e terapeutas com tecnologia, empatia e prop�sito.', style: TextStyle(fontSize: 18, color: BrandColors.slate)),
+                      // CORRIGIDO AQUI
+                      const Text('Conectamos pacientes e terapeutas com tecnologia, empatia e propósito.', style: TextStyle(fontSize: 18, color: BrandColors.slate)),
                     ],
                   ),
                 ),
@@ -70,7 +72,8 @@ class HeroSection extends StatelessWidget {
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                               ),
                               onPressed: onPrimaryCTA,
-                              child: const Text('Agendar sess�o'),
+                              // CORRIGIDO AQUI
+                              child: const Text('Agendar sessão'),
                             ),
                           ),
                           const SizedBox(height: 12),
@@ -87,7 +90,8 @@ class HeroSection extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          const Text('� 2025 Reconstruir Clinic', style: TextStyle(fontSize: 12, color: Colors.black45)),
+                          // CORRIGIDO AQUI
+                          const Text('© 2025 Reconstruir Clinic', style: TextStyle(fontSize: 12, color: Colors.black45)),
                         ],
                       ),
                     ),

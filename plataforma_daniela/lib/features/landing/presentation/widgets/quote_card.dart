@@ -26,8 +26,9 @@ class QuoteCard extends StatelessWidget {
               const SizedBox(height: 8),
               Text(text, style: const TextStyle(fontSize: 14, color: BrandColors.slate, height: 1.5)),
               const SizedBox(height: 10),
+              // LINHA CORRIGIDA ABAIXO
               Text(
-                '� $author',
+                '— $author',
                 style: const TextStyle(fontSize: 12, color: BrandColors.charcoal, fontWeight: FontWeight.w700),
               ),
             ],

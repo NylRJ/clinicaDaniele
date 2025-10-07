@@ -16,7 +16,8 @@ class TestimonialsSection extends StatelessWidget {
           runSpacing: 16,
           children: [
             QuoteCard(text: 'Profissionalismo e acolhimento que mudaram minha vida.', author: 'R.M.'),
-            QuoteCard(text: 'Agendamento f�cil e atendimento humanizado.', author: 'G.S.'),
+            // CORRIGIDO AQUI
+            QuoteCard(text: 'Agendamento fácil e atendimento humanizado.', author: 'G.S.'),
             QuoteCard(text: 'Me senti segura e bem cuidada em todo o processo.', author: 'M.A.'),
           ],
         ),

@@ -38,7 +38,7 @@ class Navbar extends StatelessWidget {
             final links = Row(
               children: [
                 _NavBtn('Sobre', () => onTap(keys.sobre)),
-                _NavBtn('Servi�os', () => onTap(keys.servicos)),
+                _NavBtn('Serviços', () => onTap(keys.servicos)),
                 _NavBtn('Profissionais', () => onTap(keys.profissionais)),
                 _NavBtn('Depoimentos', () => onTap(keys.depoimentos)),
                 const SizedBox(width: 8),

@@ -23,7 +23,7 @@ class NavDrawer extends StatelessWidget {
             ),
             const Divider(height: 24),
             _item('Sobre', () => onTap(keys.sobre)),
-            _item('Servi�os', () => onTap(keys.servicos)),
+            _item('Serviços', () => onTap(keys.servicos)),
             _item('Profissionais', () => onTap(keys.profissionais)),
             _item('Depoimentos', () => onTap(keys.depoimentos)),
             _item('Agendar', () => onTap(keys.contato), bold: true),

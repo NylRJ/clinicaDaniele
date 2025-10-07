@@ -8,14 +8,17 @@ class ServicesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cards = const [
-      ServiceCard(icon: Icons.psychology, title: 'Psicoterapia Individual', desc: 'Sess�es personalizadas focadas nas suas necessidades.'),
-      ServiceCard(icon: Icons.family_restroom, title: 'Casal e Fam�lia', desc: 'Atendimento para rela��es mais saud�veis.'),
-      ServiceCard(icon: Icons.self_improvement, title: 'Grupos e Workshops', desc: 'Crescimento pessoal com media��o profissional.'),
+      ServiceCard(icon: Icons.psychology, title: 'Psicoterapia Individual', desc: 'Sessões personalizadas focadas nas suas necessidades.'),
+      // CORRIGIDO AQUI
+      ServiceCard(icon: Icons.family_restroom, title: 'Casal e Família', desc: 'Atendimento para relações mais saudáveis.'),
+      // CORRIGIDO AQUI
+      ServiceCard(icon: Icons.self_improvement, title: 'Grupos e Workshops', desc: 'Crescimento pessoal com mediação profissional.'),
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionTitle('Nossos servi�os'),
+        // CORRIGIDO AQUI
+        const SectionTitle('Nossos serviços'),
         const SizedBox(height: 16),
         LayoutBuilder(
           builder: (context, c) {

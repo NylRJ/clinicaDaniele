@@ -12,7 +12,8 @@ class Footer extends StatelessWidget {
           child: const Column(
             children: [
               Divider(height: 32),
-              Text('� 2025 Reconstruir Clinic � Todos os direitos reservados', style: TextStyle(fontSize: 12, color: Colors.black45)),
+              // LINHA CORRIGIDA ABAIXO
+              Text('© 2025 Reconstruir Clinic • Todos os direitos reservados', style: TextStyle(fontSize: 12, color: Colors.black45)),
             ],
           ),
         ),
