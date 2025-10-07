@@ -2,6 +2,7 @@
 import 'package:google_fonts/google_fonts.dart';
 import 'package:plataforma_daniela/core/styles/brand_colors.dart';
 import 'package:plataforma_daniela/features/landing/presentation/widgets/widgets.dart';
+import 'package:plataforma_daniela/core/widgets/app_background.dart';
 
 class LandingEleganteV2 extends StatefulWidget {
   const LandingEleganteV2({super.key});
@@ -52,7 +53,7 @@ class _LandingEleganteV2State extends State<LandingEleganteV2> with TickerProvid
       backgroundColor: const Color(0xFFF9F5EE),
       body: Stack(
         children: [
-          Positioned.fill(child: ParallaxBackground(scroll: _scroll)),
+          const Positioned.fill(child: AppBackground()),
           CustomScrollView(
             controller: _scroll,
             slivers: [

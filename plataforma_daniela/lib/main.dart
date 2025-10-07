@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:plataforma_daniela/features/landing/presentation/screens/landing_elegante_v2.dart';
 import 'package:plataforma_daniela/features/auth/presentation/screens/login_screen.dart';
+import 'package:plataforma_daniela/features/auth/presentation/screens/register_screen.dart';
 import 'firebase_options.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -28,6 +29,7 @@ class App extends StatelessWidget {
       home: const LandingEleganteV2(),
       routes: {
         '/login': (_) => const LoginScreen(),
+        '/register': (_) => const RegisterScreen(),
       },
     );
   }
