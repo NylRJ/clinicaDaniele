@@ -201,7 +201,7 @@ class _ParallaxPainter extends CustomPainter {
     canvas.drawRect(Offset.zero & size, bg);
 
     // Círculos suaves
-    final circlePaint = Paint()..color = BrandColors.gold.withOpacity(0.06);
+    final circlePaint = Paint()..color = BrandColors.gold.withAlpha(0x0F);
     canvas.drawCircle(Offset(size.width * 0.78, 180 - offsetY), 170, circlePaint);
     canvas.drawCircle(Offset(size.width * 0.22, 420 - offsetY * 1.2), 130, circlePaint);
 
@@ -211,7 +211,7 @@ class _ParallaxPainter extends CustomPainter {
       center: Offset(size.width * 0.72, 260 - offsetY * 0.8),
       baseRadius: 10,
       turns: 5.2,
-      stroke: BrandColors.gold.withOpacity(0.18),
+      stroke: BrandColors.gold.withAlpha(0x2E),
       strokeWidth: 2.0,
     );
   }
@@ -256,7 +256,7 @@ void _drawSpiral(
   canvas.drawPath(
       path,
       paint
-        ..color = stroke.withOpacity(0.10)
+        ..color = stroke.withAlpha(0x1A)
         ..strokeWidth = strokeWidth + 2);
 }
 

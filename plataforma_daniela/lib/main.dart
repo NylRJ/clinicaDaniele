@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:plataforma_daniela/features/landing/presentation/screens/landing_elegante.dart';
+import 'package:plataforma_daniela/features/landing/presentation/screens/landing_elegante_v2.dart';
 import 'firebase_options.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const App());
 }
 
@@ -21,12 +19,12 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Reconstruir Clinic',
       theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFD4AF37)),
         textTheme: GoogleFonts.interTextTheme(),
         primaryTextTheme: GoogleFonts.interTextTheme(),
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF5E60CE)),
         useMaterial3: true,
       ),
-      home: const LandingElegante(),
+      home: const LandingEleganteV2(),
     );
   }
 }
