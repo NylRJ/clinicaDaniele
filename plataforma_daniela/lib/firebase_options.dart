@@ -8,10 +8,10 @@ class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
       return const FirebaseOptions(
-        apiKey: "AIzaSyCkEXEMPLO-CHAVE-UNICA",
+        apiKey: "AIzaSyAm46iKEJq8pXu42oy8R1yy4W5w9L6wgXM",
         appId: "1:142672787863:web:8e0b12abcd98765ef4321",
         messagingSenderId: "142672787863",
-        projectId: "daniconsultorio-349bf",
+        projectId: "ddaniconsultorio-349bf",
         authDomain: "daniconsultorio-349bf.firebaseapp.com",
         storageBucket: "daniconsultorio-349bf.appspot.com",
         measurementId: "G-EXEMPLO1234",
@@ -55,9 +55,7 @@ class DefaultFirebaseOptions {
         );
       case TargetPlatform.linux:
       default:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions are not supported for this platform.',
-        );
+        throw UnsupportedError('DefaultFirebaseOptions are not supported for this platform.');
     }
   }
 }

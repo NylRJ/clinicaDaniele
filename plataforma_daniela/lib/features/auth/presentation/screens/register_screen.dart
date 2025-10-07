@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:plataforma_daniela/core/widgets/app_background.dart';
 import 'package:plataforma_daniela/core/styles/brand_colors.dart';
-import 'package:plataforma_daniela/core/widgets/brand_logo.dart'; // <-- LINHA CORRIGIDA
+import 'package:plataforma_daniela/core/widgets/app_background.dart';
+import 'package:plataforma_daniela/core/widgets/brand_logo.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -37,7 +37,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
       String userMessage;
-      // <-- LÓGICA DO CODEX APLICADA AQUI
       switch (e.code) {
         case 'email-already-in-use':
           userMessage = 'Este email já está registado. Tente iniciar a sessão.';
@@ -88,7 +87,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const BrandColors(size: 60),
+                      const BrandLogo(size: 60),
                       const SizedBox(height: 24),
                       const Text('Crie a sua conta', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
@@ -138,10 +137,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      TextButton(
-                        onPressed: () => Navigator.pop(context), // Volta para o ecrã de login
-                        child: const Text('Já tem uma conta? Iniciar sessão'),
-                      ),
+                      TextButton(onPressed: () => Navigator.pop(context), child: const Text('Já tem uma conta? Iniciar sessão')),
                     ],
                   ),
                 ),

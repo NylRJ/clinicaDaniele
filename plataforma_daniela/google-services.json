@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "142672787863",
+    "project_id": "daniconsultorio-349bf",
+    "storage_bucket": "daniconsultorio-349bf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:142672787863:android:0b3bce8748ef74da2a2cd2",
+        "android_client_info": {
+          "package_name": "com.daniele.plataforma"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAm46iKEJq8pXu42oy8R1yy4W5w9L6wgXM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:142672787863:android:b9ea3671a7c0497b2a2cd2",
+        "android_client_info": {
+          "package_name": "com.example.plataforma_daniela"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAm46iKEJq8pXu42oy8R1yy4W5w9L6wgXM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
