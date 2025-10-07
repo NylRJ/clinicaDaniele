@@ -29,3 +29,4 @@ class BrandLogo extends StatelessWidget {
     );
   }
 }
+

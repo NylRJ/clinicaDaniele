@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'section_title.dart';
-import 'quote_card.dart';
+import '../widgets/widgets.dart';
 
 class TestimonialsSection extends StatelessWidget {
   const TestimonialsSection({super.key});
@@ -16,7 +16,7 @@ class TestimonialsSection extends StatelessWidget {
           runSpacing: 16,
           children: [
             QuoteCard(text: 'Profissionalismo e acolhimento que mudaram minha vida.', author: 'R.M.'),
-            QuoteCard(text: 'Agendamento fácil e atendimento humanizado.', author: 'G.S.'),
+            QuoteCard(text: 'Agendamento fï¿½cil e atendimento humanizado.', author: 'G.S.'),
             QuoteCard(text: 'Me senti segura e bem cuidada em todo o processo.', author: 'M.A.'),
           ],
         ),

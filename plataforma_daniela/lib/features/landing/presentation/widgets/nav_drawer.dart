@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../styles/brand_colors.dart';
-import 'brand_logo.dart';
-import 'navbar.dart';
+import '../widgets/widgets.dart';
 
 class NavDrawer extends StatelessWidget {
   const NavDrawer({super.key, required this.onTap, required this.keys});
@@ -24,7 +23,7 @@ class NavDrawer extends StatelessWidget {
             ),
             const Divider(height: 24),
             _item('Sobre', () => onTap(keys.sobre)),
-            _item('Serviços', () => onTap(keys.servicos)),
+            _item('Serviï¿½os', () => onTap(keys.servicos)),
             _item('Profissionais', () => onTap(keys.profissionais)),
             _item('Depoimentos', () => onTap(keys.depoimentos)),
             _item('Agendar', () => onTap(keys.contato), bold: true),
@@ -38,10 +37,7 @@ class NavDrawer extends StatelessWidget {
     return ListTile(
       title: Text(
         label,
-        style: TextStyle(
-          fontWeight: bold ? FontWeight.w800 : FontWeight.w600,
-          color: BrandColors.charcoal,
-        ),
+        style: TextStyle(fontWeight: bold ? FontWeight.w800 : FontWeight.w600, color: BrandColors.charcoal),
       ),
       onTap: onTap,
     );

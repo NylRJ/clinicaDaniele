@@ -24,18 +24,11 @@ class QuoteCard extends StatelessWidget {
             children: [
               const Icon(Icons.format_quote, color: BrandColors.gold),
               const SizedBox(height: 8),
-              Text(
-                text,
-                style: const TextStyle(fontSize: 14, color: BrandColors.slate, height: 1.5),
-              ),
+              Text(text, style: const TextStyle(fontSize: 14, color: BrandColors.slate, height: 1.5)),
               const SizedBox(height: 10),
               Text(
-                '— $author',
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: BrandColors.charcoal,
-                  fontWeight: FontWeight.w700,
-                ),
+                'ï¿½ $author',
+                style: const TextStyle(fontSize: 12, color: BrandColors.charcoal, fontWeight: FontWeight.w700),
               ),
             ],
           ),

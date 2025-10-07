@@ -15,10 +15,7 @@ class CTASection extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const SectionTitle(
-            'Pronta(o) para começar?',
-            subtitle: 'Agende uma sessão e dê o primeiro passo.',
-          ),
+          const SectionTitle('Pronta(o) para comeï¿½ar?', subtitle: 'Agende uma sessï¿½o e dï¿½ o primeiro passo.'),
           const SizedBox(height: 16),
           SizedBox(
             height: 48,

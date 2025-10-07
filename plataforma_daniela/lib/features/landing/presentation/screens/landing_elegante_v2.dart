@@ -1,16 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../styles/brand_colors.dart';
-import '../widgets/parallax_painter.dart';
-import '../widgets/navbar.dart';
-import '../widgets/nav_drawer.dart';
-import '../widgets/hero_section.dart';
-import '../widgets/section_wrapper.dart';
-import '../widgets/services_section.dart';
-import '../widgets/professionals_section.dart';
-import '../widgets/testimonials_section.dart';
-import '../widgets/cta_section.dart';
-import '../widgets/footer.dart';
+import '../widgets/widgets.dart';
 
 class LandingEleganteV2 extends StatefulWidget {
   const LandingEleganteV2({super.key});
@@ -77,7 +68,7 @@ class _LandingEleganteV2State extends State<LandingEleganteV2> with TickerProvid
                 child: SectionWrapper(key: _kServicos, child: const ServicesSection()),
               ),
               SliverToBoxAdapter(
-                child: SectionWrapper(key: _kProfissionais, child: const professionals_section()),
+                child: SectionWrapper(key: _kProfissionais, child: const ProfessionalsSection()),
               ),
               SliverToBoxAdapter(
                 child: SectionWrapper(key: _kDepoimentos, child: const TestimonialsSection()),

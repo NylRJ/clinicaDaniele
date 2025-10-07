@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../styles/brand_colors.dart';
-import 'brand_logo.dart';
+import '../widgets/widgets.dart';
 
 class NavKeys {
-  const NavKeys({
-    required this.sobre,
-    required this.servicos,
-    required this.profissionais,
-    required this.depoimentos,
-    required this.contato,
-  });
+  const NavKeys({required this.sobre, required this.servicos, required this.profissionais, required this.depoimentos, required this.contato});
   final GlobalKey sobre;
   final GlobalKey servicos;
   final GlobalKey profissionais;
@@ -37,18 +31,14 @@ class Navbar extends StatelessWidget {
                 SizedBox(width: 10),
                 Text(
                   'Reconstruir Clinic',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 18,
-                    color: BrandColors.charcoal,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18, color: BrandColors.charcoal),
                 ),
               ],
             );
             final links = Row(
               children: [
                 _NavBtn('Sobre', () => onTap(keys.sobre)),
-                _NavBtn('Serviços', () => onTap(keys.servicos)),
+                _NavBtn('Serviï¿½os', () => onTap(keys.servicos)),
                 _NavBtn('Profissionais', () => onTap(keys.profissionais)),
                 _NavBtn('Depoimentos', () => onTap(keys.depoimentos)),
                 const SizedBox(width: 8),
@@ -63,10 +53,7 @@ class Navbar extends StatelessWidget {
                   links
                 else
                   IconButton(
-                    icon: const Icon(
-                      Icons.menu_rounded,
-                      color: BrandColors.charcoal,
-                    ),
+                    icon: const Icon(Icons.menu_rounded, color: BrandColors.charcoal),
                     onPressed: () => Scaffold.of(context).openDrawer(),
                   ),
               ],
@@ -91,11 +78,7 @@ class _NavBtn extends StatelessWidget {
         onPressed: onPressed,
         child: Text(
           label,
-          style: const TextStyle(
-            color: BrandColors.slate,
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-          ),
+          style: const TextStyle(color: BrandColors.slate, fontSize: 14, fontWeight: FontWeight.w700),
         ),
       ),
     );
@@ -118,10 +101,7 @@ class _PrimaryBtn extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
       onPressed: onPressed,
-      child: Text(
-        label,
-        style: const TextStyle(fontWeight: FontWeight.w800),
-      ),
+      child: Text(label, style: const TextStyle(fontWeight: FontWeight.w800)),
     );
   }
 }

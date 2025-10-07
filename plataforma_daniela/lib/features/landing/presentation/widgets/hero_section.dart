@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../styles/brand_colors.dart';
-import 'brand_logo.dart';
+import '../widgets/widgets.dart';
 
 class HeroSection extends StatelessWidget {
-  const HeroSection({
-    super.key,
-    required this.onPrimaryCTA,
-    required this.fade,
-    required this.slide,
-  });
+  const HeroSection({super.key, required this.onPrimaryCTA, required this.fade, required this.slide});
   final VoidCallback onPrimaryCTA;
   final Animation<double> fade;
   final Animation<Offset> slide;
@@ -36,27 +31,15 @@ class HeroSection extends StatelessWidget {
                       const SizedBox(height: 16),
                       const Text(
                         'Reconstruir Clinic',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: BrandColors.charcoal,
-                        ),
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: BrandColors.charcoal),
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Plataforma Integrada\nde Gestão Terapêutica',
-                        style: GoogleFonts.playfairDisplay(
-                          fontSize: 42,
-                          height: 1.1,
-                          fontWeight: FontWeight.w700,
-                          color: BrandColors.charcoal,
-                        ),
+                        'Plataforma Integrada\nde Gestï¿½o Terapï¿½utica',
+                        style: GoogleFonts.playfairDisplay(fontSize: 42, height: 1.1, fontWeight: FontWeight.w700, color: BrandColors.charcoal),
                       ),
                       const SizedBox(height: 12),
-                      const Text(
-                        'Conectamos pacientes e terapeutas com tecnologia, empatia e propósito.',
-                        style: TextStyle(fontSize: 18, color: BrandColors.slate),
-                      ),
+                      const Text('Conectamos pacientes e terapeutas com tecnologia, empatia e propï¿½sito.', style: TextStyle(fontSize: 18, color: BrandColors.slate)),
                     ],
                   ),
                 ),
@@ -75,10 +58,7 @@ class HeroSection extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Text(
-                            'Comece agora',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
-                          ),
+                          const Text('Comece agora', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
                           const SizedBox(height: 18),
                           SizedBox(
                             width: 260,
@@ -90,7 +70,7 @@ class HeroSection extends StatelessWidget {
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                               ),
                               onPressed: onPrimaryCTA,
-                              child: const Text('Agendar sessão'),
+                              child: const Text('Agendar sessï¿½o'),
                             ),
                           ),
                           const SizedBox(height: 12),
@@ -107,10 +87,7 @@ class HeroSection extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          const Text(
-                            '© 2025 Reconstruir Clinic',
-                            style: TextStyle(fontSize: 12, color: Colors.black45),
-                          ),
+                          const Text('ï¿½ 2025 Reconstruir Clinic', style: TextStyle(fontSize: 12, color: Colors.black45)),
                         ],
                       ),
                     ),
@@ -128,13 +105,7 @@ class HeroSection extends StatelessWidget {
                           Expanded(child: right),
                         ],
                       )
-                    : Column(
-                        children: [
-                          left,
-                          const SizedBox(height: 20),
-                          right,
-                        ],
-                      ),
+                    : Column(children: [left, const SizedBox(height: 20), right]),
               );
             },
           ),
