@@ -4,9 +4,10 @@ import 'package:plataforma_daniela/core/widgets/brand_logo.dart';
 import 'package:plataforma_daniela/features/landing/presentation/widgets/navbar.dart';
 
 class NavDrawer extends StatelessWidget {
-  const NavDrawer({super.key, required this.onTap, required this.keys});
+  const NavDrawer({super.key, required this.onTap, required this.keys, this.onAgendarPressed});
   final Future<void> Function(GlobalKey) onTap;
   final NavKeys keys;
+  final VoidCallback? onAgendarPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class NavDrawer extends StatelessWidget {
             _item('Serviços', () => onTap(keys.servicos)),
             _item('Profissionais', () => onTap(keys.profissionais)),
             _item('Depoimentos', () => onTap(keys.depoimentos)),
-            _item('Agendar', () => onTap(keys.contato), bold: true),
+            _item('Agendar', onAgendarPressed ?? () => onTap(keys.contato), bold: true),
           ],
         ),
       ),

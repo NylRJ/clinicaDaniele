@@ -3,7 +3,12 @@ import 'package:plataforma_daniela/core/styles/brand_colors.dart';
 import 'section_title.dart';
 
 class CTASection extends StatelessWidget {
-  const CTASection({super.key});
+  // 1. Adicionamos o parâmetro para receber a função
+  final VoidCallback onPressed;
+
+  // 2. Atualizamos o construtor para exigir essa função
+  const CTASection({super.key, required this.onPressed});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -15,7 +20,6 @@ class CTASection extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // LINHA CORRIGIDA ABAIXO
           const SectionTitle('Pronta(o) para começar?', subtitle: 'Agende uma sessão e dê o primeiro passo.'),
           const SizedBox(height: 16),
           SizedBox(
@@ -27,7 +31,8 @@ class CTASection extends StatelessWidget {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                 padding: const EdgeInsets.symmetric(horizontal: 22),
               ),
-              onPressed: () {},
+              // 3. Usamos a função que foi passada para o widget
+              onPressed: onPressed,
               child: const Text('Agendar agora'),
             ),
           ),

@@ -35,6 +35,7 @@ class _LandingEleganteV2State extends State<LandingEleganteV2> with TickerProvid
   @override
   Widget build(BuildContext context) {
     final fade = CurvedAnimation(parent: _heroCtrl, curve: Curves.easeOut);
+    // <-- CORREÇÃO AQUI: Corrigido o erro de digitação de "_hero_ctrl" para "_heroCtrl"
     final slide = Tween<Offset>(begin: const Offset(0, .06), end: Offset.zero).animate(CurvedAnimation(parent: _heroCtrl, curve: Curves.easeOut));
 
     return Scaffold(
@@ -44,8 +45,11 @@ class _LandingEleganteV2State extends State<LandingEleganteV2> with TickerProvid
           await _goTo(k);
         },
         keys: NavKeys(sobre: _kSobre, servicos: _kServicos, profissionais: _kProfissionais, depoimentos: _kDepoimentos, contato: _kContato),
+        onAgendarPressed: () {
+          Navigator.pushNamed(context, '/login');
+        },
       ),
-      backgroundColor: BrandColors.ecru,
+      backgroundColor: const Color(0xFFF9F5EE),
       body: Stack(
         children: [
           Positioned.fill(child: ParallaxBackground(scroll: _scroll)),
@@ -56,10 +60,19 @@ class _LandingEleganteV2State extends State<LandingEleganteV2> with TickerProvid
                 child: Navbar(
                   onTap: _goTo,
                   keys: NavKeys(sobre: _kSobre, servicos: _kServicos, profissionais: _kProfissionais, depoimentos: _kDepoimentos, contato: _kContato),
+                  onAgendarPressed: () {
+                    Navigator.pushNamed(context, '/login');
+                  },
                 ),
               ),
               SliverToBoxAdapter(
-                child: HeroSection(onPrimaryCTA: () => _goTo(_kContato), fade: fade, slide: slide),
+                child: HeroSection(
+                  onPrimaryCTA: () {
+                    Navigator.pushNamed(context, '/login');
+                  },
+                  fade: fade,
+                  slide: slide,
+                ),
               ),
               SliverToBoxAdapter(
                 child: SectionWrapper(key: _kSobre, child: const _SobreSection()),
@@ -74,7 +87,14 @@ class _LandingEleganteV2State extends State<LandingEleganteV2> with TickerProvid
                 child: SectionWrapper(key: _kDepoimentos, child: const TestimonialsSection()),
               ),
               SliverToBoxAdapter(
-                child: SectionWrapper(key: _kContato, child: const CTASection()),
+                child: SectionWrapper(
+                  key: _kContato,
+                  child: CTASection(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/login');
+                    },
+                  ),
+                ),
               ),
               const SliverToBoxAdapter(child: Footer()),
             ],
