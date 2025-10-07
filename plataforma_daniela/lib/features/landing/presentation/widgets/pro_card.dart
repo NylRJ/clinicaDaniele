@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../styles/brand_colors.dart';
+import 'package:plataforma_daniela/core/styles/brand_colors.dart';
 
 class ProCard extends StatelessWidget {
   const ProCard({super.key, required this.name, required this.role});

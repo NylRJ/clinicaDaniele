@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../../styles/brand_colors.dart';
+import 'package:plataforma_daniela/core/styles/brand_colors.dart';
 
 class ParallaxBackground extends StatelessWidget {
   const ParallaxBackground({super.key, required this.scroll});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../styles/brand_colors.dart';
+import 'package:plataforma_daniela/core/styles/brand_colors.dart';
 
 class ServiceCard extends StatelessWidget {
   const ServiceCard({super.key, required this.icon, required this.title, required this.desc});

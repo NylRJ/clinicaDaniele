@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../styles/brand_colors.dart';
+import 'package:plataforma_daniela/core/styles/brand_colors.dart';
 import 'section_title.dart';
 
 class CTASection extends StatelessWidget {

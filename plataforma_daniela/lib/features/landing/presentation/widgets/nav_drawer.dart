@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../styles/brand_colors.dart';
-import '../widgets/widgets.dart';
+import 'package:plataforma_daniela/core/styles/brand_colors.dart';
+import 'package:plataforma_daniela/core/widgets/brand_logo.dart';
+import 'package:plataforma_daniela/features/landing/presentation/widgets/navbar.dart';
 
 class NavDrawer extends StatelessWidget {
   const NavDrawer({super.key, required this.onTap, required this.keys});

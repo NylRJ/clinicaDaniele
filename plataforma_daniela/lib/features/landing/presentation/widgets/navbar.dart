@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../styles/brand_colors.dart';
-import '../widgets/widgets.dart';
+import 'package:plataforma_daniela/core/styles/brand_colors.dart';
+import 'package:plataforma_daniela/core/widgets/brand_logo.dart';
 
 class NavKeys {
   const NavKeys({required this.sobre, required this.servicos, required this.profissionais, required this.depoimentos, required this.contato});

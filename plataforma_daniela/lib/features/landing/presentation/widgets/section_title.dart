@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../styles/brand_colors.dart';
+import 'package:plataforma_daniela/core/styles/brand_colors.dart';
 
 class SectionTitle extends StatelessWidget {
   const SectionTitle(this.title, {super.key, this.subtitle});

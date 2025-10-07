@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../styles/brand_colors.dart';
+import 'package:plataforma_daniela/core/styles/brand_colors.dart';
 
 class QuoteCard extends StatelessWidget {
   const QuoteCard({super.key, required this.text, required this.author});

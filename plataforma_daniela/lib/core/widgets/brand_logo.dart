@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../styles/brand_colors.dart';
+import 'package:plataforma_daniela/core/styles/brand_colors.dart';
 
 class BrandLogo extends StatelessWidget {
   const BrandLogo({super.key, required this.size, this.darkPlate = false});

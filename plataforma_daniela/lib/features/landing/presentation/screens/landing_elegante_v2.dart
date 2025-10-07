@@ -1,7 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../styles/brand_colors.dart';
-import '../widgets/widgets.dart';
+import 'package:plataforma_daniela/core/styles/brand_colors.dart';
+import 'package:plataforma_daniela/features/landing/presentation/widgets/widgets.dart';
 
 class LandingEleganteV2 extends StatefulWidget {
   const LandingEleganteV2({super.key});

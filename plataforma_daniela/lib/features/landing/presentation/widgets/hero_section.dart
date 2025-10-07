@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../styles/brand_colors.dart';
-import '../widgets/widgets.dart';
+import 'package:plataforma_daniela/core/styles/brand_colors.dart';
+import 'package:plataforma_daniela/core/widgets/brand_logo.dart';
 
 class HeroSection extends StatelessWidget {
   const HeroSection({super.key, required this.onPrimaryCTA, required this.fade, required this.slide});
