@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:plataforma_daniela/features/booking/presentation/screens/booking_screen.dart';
 import 'package:plataforma_daniela/features/landing/presentation/screens/landing_elegante_v2.dart';
 import 'package:plataforma_daniela/features/auth/presentation/screens/login_screen.dart';
 import 'package:plataforma_daniela/features/auth/presentation/screens/register_screen.dart';
@@ -27,10 +28,7 @@ class App extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const LandingEleganteV2(),
-      routes: {
-        '/login': (_) => const LoginScreen(),
-        '/register': (_) => const RegisterScreen(),
-      },
+      routes: {'/login': (_) => const LoginScreen(), '/register': (_) => const RegisterScreen(), '/booking': (context) => const BookingScreen()},
     );
   }
 }
