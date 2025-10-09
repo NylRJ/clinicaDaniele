@@ -14,7 +14,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final _nameController = TextEditingController(); // Adicionado
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -34,12 +34,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    // Chama o método no Cubit
-    context.read<AuthCubit>().signUp(
-      name: _nameController.text.trim(), // Adicionado
-      email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
-    );
+    context.read<AuthCubit>().signUp(name: _nameController.text.trim(), email: _emailController.text.trim(), password: _passwordController.text.trim());
   }
 
   @override
@@ -50,6 +45,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         listener: (context, state) {
           if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message), backgroundColor: Colors.red));
+          }
+          // CORREÇÃO: Navega para a tela principal após o cadastro bem-sucedido.
+          if (state is Authenticated) {
+            Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
           }
         },
         child: Stack(
@@ -71,7 +70,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const Text('Comece a sua jornada de bem-estar.', style: TextStyle(color: BrandColors.slate)),
                         const SizedBox(height: 32),
                         TextField(
-                          // Campo de nome
                           controller: _nameController,
                           decoration: const InputDecoration(
                             labelText: 'Nome Completo',

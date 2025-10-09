@@ -1,11 +1,1 @@
-{
-  "firestore": {
-    "database": "(default)",
-    "location": "southamerica-east1",
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
-  },
-  "storage": {
-    "rules": "storage.rules"
-  }
-}
+{"flutter":{"platforms":{"android":{"default":{"projectId":"daniconsultorio-349bf","appId":"1:142672787863:android:b9ea3671a7c0497b2a2cd2","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"daniconsultorio-349bf","configurations":{"android":"1:142672787863:android:b9ea3671a7c0497b2a2cd2","ios":"1:142672787863:ios:de49b0966ad032ed2a2cd2","macos":"1:142672787863:ios:de49b0966ad032ed2a2cd2","web":"1:142672787863:web:5d30f67901537eba2a2cd2","windows":"1:142672787863:web:f5374a870a76842c2a2cd2"}}}}}}

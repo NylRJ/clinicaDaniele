@@ -1,3 +1,4 @@
+// ARQUIVO: lib/features/auth/data/datasources/auth_firebase_datasource.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import '../../../../core/error/exceptions.dart';
@@ -45,11 +46,12 @@ class AuthFirebaseDataSourceImpl implements AuthFirebaseDataSource {
       }
       final userDoc = await firestore.collection('users').doc(firebaseUser.uid).get();
       if (!userDoc.exists) {
-        throw ServerException(); // User profile doesn't exist
+        // Se o usuário existe no Auth mas não no Firestore, pode ser um estado inconsistente.
+        // Você pode optar por criar o documento aqui ou lançar um erro mais específico.
+        throw ServerException(message: 'Perfil de usuário não encontrado. Por favor, entre em contato com o suporte.');
       }
       return UserModel.fromSnapshot(userDoc);
     } on firebase.FirebaseAuthException catch (e) {
-      // Handle specific auth errors
       throw ServerException(message: e.message ?? 'Authentication failed');
     } catch (e) {
       throw ServerException();
@@ -64,11 +66,12 @@ class AuthFirebaseDataSourceImpl implements AuthFirebaseDataSource {
       if (firebaseUser == null) {
         throw ServerException();
       }
+      // CORREÇÃO: Cria o UserModel e o salva no Firestore.
       final userModel = UserModel(
         uid: firebaseUser.uid,
         name: name,
         email: email,
-        role: 'paciente', // Default role
+        role: 'paciente', // Define o papel padrão como 'paciente'
       );
       await firestore.collection('users').doc(firebaseUser.uid).set(userModel.toJson());
       return userModel;

@@ -26,7 +26,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _login() {
-    // Chama o método no Cubit em vez do Firebase diretamente
     context.read<AuthCubit>().signIn(email: _emailController.text.trim(), password: _passwordController.text.trim());
   }
 
@@ -39,7 +38,10 @@ class _LoginScreenState extends State<LoginScreen> {
           if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message), backgroundColor: Colors.red));
           }
-          // A navegação em caso de sucesso é tratada pelo HomeRedirectScreen
+          // CORREÇÃO: Navega para a tela principal após o login bem-sucedido.
+          if (state is Authenticated) {
+            Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+          }
         },
         child: Stack(
           children: [
@@ -103,7 +105,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             const Text('Não tem uma conta?'),
                             TextButton(
-                              // A navegação para o registo continua igual por enquanto
                               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const RegisterScreen())),
                               child: const Text('Cadastre-se', style: TextStyle(fontWeight: FontWeight.bold)),
                             ),

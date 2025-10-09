@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:plataforma_daniela/features/booking/presentation/screens/booking_screen.dart';
+import 'package:plataforma_daniela/features/landing/presentation/screens/landing_elegante_v2.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
 import '../../features/auth/presentation/cubit/auth_state.dart';
-import '../../features/auth/presentation/screens/login_screen.dart'; // Você precisará criar esta tela
-import '../../features/appointment/presentation/screens/appointment_screen.dart';
 import '../../features/therapist_dashboard/presentation/screens/therapist_agenda_screen.dart';
 
 class HomeRedirectScreen extends StatelessWidget {
@@ -16,18 +16,18 @@ class HomeRedirectScreen extends StatelessWidget {
         if (state is Authenticated) {
           final user = state.user;
           if (user.role == 'terapeuta') {
-            // Não precisa mais passar parâmetros
+            // Redireciona o terapeuta para a sua agenda.
             return const TherapistAgendaScreen();
           } else {
-            // Não precisa mais passar parâmetros
-            return const AppointmentScreen();
+            // Redireciona o paciente para a tela de agendamentos.
+            return const BookingScreen();
           }
         } else if (state is Unauthenticated) {
-          // Se não estiver autenticado, vai para a tela de login (crie um placeholder para ela)
-          return const LoginScreen();
+          // CORREÇÃO: Se não estiver autenticado, mostra a Landing Page.
+          return const LandingEleganteV2();
         }
 
-        // Estado de loading ou inicial
+        // Enquanto o estado de autenticação é verificado, mostra um loading.
         return const Scaffold(body: Center(child: CircularProgressIndicator()));
       },
     );

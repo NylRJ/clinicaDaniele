@@ -14,8 +14,15 @@ final class TherapistConfigModel extends TherapistConfigEntity {
       return MapEntry(key.toString(), list);
     });
 
+    // Accept either a bare UID or a document path like '/users/<uid>'
+    String rawId = (data['therapistId'] ?? snap.id).toString();
+    if (rawId.contains('/')) {
+      final parts = rawId.split('/');
+      rawId = parts.isNotEmpty ? parts.last : rawId;
+    }
+
     return TherapistConfigModel(
-      therapistId: (data['therapistId'] ?? snap.id).toString(),
+      therapistId: rawId,
       therapistName: (data['therapistName'] ?? '').toString(),
       sessionDurationMinutes: (data['sessionDurationMinutes'] is int) ? data['sessionDurationMinutes'] as int : int.tryParse(data['sessionDurationMinutes']?.toString() ?? '') ?? 50,
       weeklyAvailability: weeklyAvailability,
