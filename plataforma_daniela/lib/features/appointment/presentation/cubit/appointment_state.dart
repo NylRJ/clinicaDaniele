@@ -1,5 +1,8 @@
+// ARQUIVO: lib/features/appointment/presentation/cubit/appointment_state.dart
+
 import 'package:equatable/equatable.dart';
-import 'package:plataforma_daniela/features/appointment/data/models/therapist_config_model.dart';
+// Corrigido para importar a ENTIDADE em vez do MODELO
+import 'package:plataforma_daniela/features/appointment/domain/entities/therapist_config_entity.dart';
 
 abstract class AppointmentState extends Equatable {
   const AppointmentState();
@@ -15,8 +18,14 @@ class AppointmentLoading extends AppointmentState {
   const AppointmentLoading();
 }
 
+// Novo estado para o carregamento apenas dos horários
+class AvailableSlotsLoading extends AppointmentState {
+  const AvailableSlotsLoading();
+}
+
 class TherapistsLoaded extends AppointmentState {
-  final List<TherapistConfigModel> therapists;
+  // Corrigido para usar a ENTIDADE
+  final List<TherapistConfigEntity> therapists;
   const TherapistsLoaded(this.therapists);
 
   @override
@@ -37,7 +46,7 @@ class AppointmentCreated extends AppointmentState {
 
 class AppointmentError extends AppointmentState {
   final String message;
-  const AppointmentError(this.message);
+  const AppointmentError({required this.message});
 
   @override
   List<Object?> get props => [message];
