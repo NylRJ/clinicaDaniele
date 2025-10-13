@@ -1,10 +1,11 @@
+// ARQUIVO: lib/features/appointment/data/models/therapist_config_model.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../../domain/entities/therapist_config_entity.dart';
 
 final class TherapistConfigModel extends TherapistConfigEntity {
   const TherapistConfigModel({required super.therapistId, required super.therapistName, required super.sessionDurationMinutes, required super.weeklyAvailability});
 
+  // FÁBRICA SIMPLIFICADA
   factory TherapistConfigModel.fromSnapshot(DocumentSnapshot snap) {
     final data = snap.data() as Map<String, dynamic>? ?? {};
     final availabilityRaw = (data['weeklyAvailability'] as Map<String, dynamic>?) ?? {};
@@ -14,17 +15,11 @@ final class TherapistConfigModel extends TherapistConfigEntity {
       return MapEntry(key.toString(), list);
     });
 
-    // Accept either a bare UID or a document path like '/users/<uid>'
-    String rawId = (data['therapistId'] ?? snap.id).toString();
-    if (rawId.contains('/')) {
-      final parts = rawId.split('/');
-      rawId = parts.isNotEmpty ? parts.last : rawId;
-    }
-
     return TherapistConfigModel(
-      therapistId: rawId,
+      // Agora ele lê o therapistId diretamente ou usa o ID do documento
+      therapistId: (data['therapistId'] ?? snap.id).toString(),
       therapistName: (data['therapistName'] ?? '').toString(),
-      sessionDurationMinutes: (data['sessionDurationMinutes'] is int) ? data['sessionDurationMinutes'] as int : int.tryParse(data['sessionDurationMinutes']?.toString() ?? '') ?? 50,
+      sessionDurationMinutes: (data['sessionDurationMinutes'] as int?) ?? 50,
       weeklyAvailability: weeklyAvailability,
     );
   }

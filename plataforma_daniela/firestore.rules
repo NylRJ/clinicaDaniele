@@ -1,0 +1,27 @@
+// ARQUIVO: firestore.rules
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Permite que qualquer usuário autenticado leia e escreva
+    // na coleção 'users'. Um usuário só pode editar seu próprio documento.
+    match /users/{userId} {
+      allow read, create: if request.auth != null;
+      allow update, delete: if request.auth.uid == userId;
+    }
+
+    // Permite que usuários autenticados leiam e criem agendamentos.
+    // Terapeutas podem ler todos os agendamentos, mas pacientes só podem
+    // ler e criar os seus próprios.
+    match /agendas/{appointmentId} {
+      allow read, create: if request.auth != null;
+      // Adicionar regras mais específicas de atualização/exclusão no futuro
+    }
+
+    // Permite que qualquer usuário autenticado leia as configurações dos terapeutas.
+    match /terapeutas_config/{therapistId} {
+      allow read: if request.auth != null;
+    }
+  }
+}

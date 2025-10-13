@@ -28,7 +28,13 @@ class AuthFirebaseDataSourceImpl implements AuthFirebaseDataSource {
         if (userDoc.exists) {
           return UserModel.fromSnapshot(userDoc);
         }
-        return null;
+        // Se o documento não existir, retorna um modelo de usuário com dados básicos
+        return UserModel(
+          uid: firebaseUser.uid,
+          name: firebaseUser.displayName ?? 'Usuário',
+          email: firebaseUser.email ?? '',
+          role: 'paciente', // Papel padrão
+        );
       } catch (e) {
         // Log the error if needed
         return null;
@@ -45,10 +51,17 @@ class AuthFirebaseDataSourceImpl implements AuthFirebaseDataSource {
         throw ServerException();
       }
       final userDoc = await firestore.collection('users').doc(firebaseUser.uid).get();
+
+      // **** CORREÇÃO APLICADA AQUI ****
       if (!userDoc.exists) {
-        // Se o usuário existe no Auth mas não no Firestore, pode ser um estado inconsistente.
-        // Você pode optar por criar o documento aqui ou lançar um erro mais específico.
-        throw ServerException(message: 'Perfil de usuário não encontrado. Por favor, entre em contato com o suporte.');
+        // Se o documento não existe, criamos um UserModel com os dados do Firebase Auth.
+        // Isso torna o login resiliente, mesmo que o registro no Firestore tenha falhado.
+        return UserModel(
+          uid: firebaseUser.uid,
+          name: firebaseUser.displayName ?? 'Usuário sem nome',
+          email: firebaseUser.email!,
+          role: 'paciente', // Assume o papel padrão
+        );
       }
       return UserModel.fromSnapshot(userDoc);
     } on firebase.FirebaseAuthException catch (e) {
@@ -66,13 +79,11 @@ class AuthFirebaseDataSourceImpl implements AuthFirebaseDataSource {
       if (firebaseUser == null) {
         throw ServerException();
       }
-      // CORREÇÃO: Cria o UserModel e o salva no Firestore.
-      final userModel = UserModel(
-        uid: firebaseUser.uid,
-        name: name,
-        email: email,
-        role: 'paciente', // Define o papel padrão como 'paciente'
-      );
+
+      // Atualiza o displayName no Firebase Auth
+      await firebaseUser.updateDisplayName(name);
+
+      final userModel = UserModel(uid: firebaseUser.uid, name: name, email: email, role: 'paciente');
       await firestore.collection('users').doc(firebaseUser.uid).set(userModel.toJson());
       return userModel;
     } on firebase.FirebaseAuthException catch (e) {
