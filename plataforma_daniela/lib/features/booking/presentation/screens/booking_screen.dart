@@ -1,6 +1,5 @@
 // ARQUIVO: lib/features/booking/presentation/screens/booking_screen.dart
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:plataforma_daniela/core/styles/brand_colors.dart';
@@ -12,8 +11,6 @@ import 'package:plataforma_daniela/features/appointment/presentation/cubit/appoi
 import 'package:plataforma_daniela/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:plataforma_daniela/features/auth/presentation/cubit/auth_state.dart';
 
-// Esta é a classe principal da tela de agendamento.
-// É um StatefulWidget porque precisa guardar o estado de qual terapeuta, dia e horário foram selecionados.
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});
 
@@ -27,53 +24,48 @@ class _BookingScreenState extends State<BookingScreen> {
   DateTime _selectedDay = DateTime.now();
   String? _selectedSlot;
 
-  // Este método é chamado uma vez quando a tela é criada.
+  // <-- MUDANÇA AQUI (1/3): Cache local para a lista de terapeutas.
+  // Esta lista vai "lembrar" dos terapeutas mesmo quando o estado do Cubit mudar.
+  List<TherapistConfigEntity> _therapists = [];
+
   @override
   void initState() {
     super.initState();
-    // Dispara a busca por terapeutas assim que a tela carrega.
     context.read<AppointmentCubit>().fetchTherapists();
   }
 
-  // Chamado quando o usuário seleciona um terapeuta no menu suspenso.
   void _onTherapistChanged(TherapistConfigEntity? therapist) {
     setState(() {
       _selectedTherapist = therapist;
-      _selectedSlot = null; // Limpa o horário selecionado para forçar uma nova escolha.
-    });
-    _fetchSlots(); // Inicia a busca por horários disponíveis.
-  }
-
-  // Chamado quando o usuário seleciona uma nova data no calendário.
-  void _onDateChanged(DateTime selectedDay, DateTime focusedDay) {
-    setState(() {
-      _selectedDay = selectedDay;
-      _selectedSlot = null; // Limpa o horário.
+      _selectedSlot = null;
     });
     _fetchSlots();
   }
 
-  // Função central para buscar os horários.
+  void _onDateChanged(DateTime selectedDay, DateTime focusedDay) {
+    setState(() {
+      _selectedDay = selectedDay;
+      _selectedSlot = null;
+    });
+    _fetchSlots();
+  }
+
   void _fetchSlots() {
-    // Só busca os horários se um terapeuta já foi selecionado.
     if (_selectedTherapist != null) {
       context.read<AppointmentCubit>().fetchAvailableSlots(therapistId: _selectedTherapist!.therapistId, date: _selectedDay);
     }
   }
 
-  // Monta e envia o agendamento para o cubit.
   void _submitAppointment() {
     final authState = context.read<AuthCubit>().state;
-    // Garante que o usuário está logado e todos os campos estão preenchidos.
     if (authState is Authenticated && _selectedTherapist != null && _selectedSlot != null) {
       final patient = authState.user;
       final hour = int.parse(_selectedSlot!.split(':')[0]);
       final minute = int.parse(_selectedSlot!.split(':')[1]);
       final startTime = DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day, hour, minute);
 
-      // Cria o objeto de agendamento (AppointmentEntity).
       final appointment = AppointmentEntity(
-        id: '', // O Firestore irá gerar o ID.
+        id: '',
         patientId: patient.uid,
         patientName: patient.name,
         therapistId: _selectedTherapist!.therapistId,
@@ -82,15 +74,12 @@ class _BookingScreenState extends State<BookingScreen> {
         endTime: startTime.add(Duration(minutes: _selectedTherapist!.sessionDurationMinutes)),
         status: 'agendado',
       );
-      // Envia o agendamento para ser processado pelo cubit.
       context.read<AppointmentCubit>().submitAppointment(appointment: appointment);
     } else {
-      // Mostra um erro se algo estiver faltando.
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Por favor, preencha todos os campos.')));
     }
   }
 
-  // Constrói a interface visual da tela.
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -100,7 +89,6 @@ class _BookingScreenState extends State<BookingScreen> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 1,
-          // Ouve o AuthCubit para mostrar o nome do usuário.
           title: BlocBuilder<AuthCubit, AuthState>(
             builder: (context, state) {
               if (state is Authenticated) {
@@ -116,7 +104,6 @@ class _BookingScreenState extends State<BookingScreen> {
             },
           ),
           actions: [
-            // Botão de Logout
             IconButton(
               icon: const Icon(Icons.logout, color: BrandColors.charcoal),
               onPressed: () async {
@@ -127,7 +114,6 @@ class _BookingScreenState extends State<BookingScreen> {
               },
             ),
           ],
-          // As abas "Agendamento" e "Plano Terapêutico".
           bottom: const TabBar(
             labelColor: BrandColors.charcoal,
             unselectedLabelColor: BrandColors.slate,
@@ -141,7 +127,6 @@ class _BookingScreenState extends State<BookingScreen> {
         body: Stack(
           children: [
             const Positioned.fill(child: AppBackground()),
-            // Conteúdo de cada aba.
             TabBarView(children: [_buildAgendamentoTab(), _buildPlanoTerapeuticoTab()]),
           ],
         ),
@@ -149,9 +134,7 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
-  // Constrói o conteúdo da aba "Agendamento".
   Widget _buildAgendamentoTab() {
-    // Ouve o AppointmentCubit para reagir a mudanças de estado (carregando, sucesso, erro).
     return BlocConsumer<AppointmentCubit, AppointmentState>(
       listener: (context, state) {
         if (state is AppointmentError) {
@@ -160,15 +143,15 @@ class _BookingScreenState extends State<BookingScreen> {
         if (state is AppointmentCreated) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Consulta agendada com sucesso!'), backgroundColor: Colors.green));
           setState(() {
-            _selectedSlot = null; // Limpa o horário após agendar.
+            _selectedSlot = null;
           });
-          _fetchSlots(); // Atualiza a lista de horários.
+          _fetchSlots();
         }
       },
       builder: (context, state) {
-        List<TherapistConfigEntity> therapists = [];
+        // <-- MUDANÇA AQUI (2/3): Atualiza a lista de cache quando o estado certo chega.
         if (state is TherapistsLoaded) {
-          therapists = state.therapists;
+          _therapists = state.therapists;
         }
 
         return SingleChildScrollView(
@@ -176,22 +159,17 @@ class _BookingScreenState extends State<BookingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Mostra um indicador de progresso enquanto carrega os terapeutas.
-              if (state is AppointmentLoading && state is! AvailableSlotsLoading)
+              // <-- MUDANÇA AQUI (3/3): Lógica de renderização melhorada.
+              // Mostra o loading apenas se a lista de cache AINDA estiver vazia.
+              if (state is AppointmentLoading && _therapists.isEmpty)
                 const Center(child: CircularProgressIndicator())
-              // Se os terapeutas foram carregados, mostra o seletor.
-              else if (state is TherapistsLoaded)
-                _buildTherapistSelector(state.therapists)
-              // Se deu erro, mostra a mensagem.
-              else if (state is AppointmentError)
-                Center(child: Text(state.message))
-              // Em outros casos, mostra o seletor vazio.
               else
-                _buildTherapistSelector(therapists),
+                // Sempre usa a lista de cache para construir o dropdown,
+                // garantindo que ele nunca fique vazio após o primeiro carregamento.
+                _buildTherapistSelector(_therapists),
 
               const SizedBox(height: 20),
 
-              // Widget para selecionar a data.
               ListTile(
                 title: Text('Data Selecionada: ${DateFormat('dd/MM/yyyy').format(_selectedDay)}'),
                 trailing: const Icon(Icons.calendar_today),
@@ -205,11 +183,14 @@ class _BookingScreenState extends State<BookingScreen> {
 
               const SizedBox(height: 20),
 
-              // Mostra o indicador de progresso ao buscar horários ou a grade de horários.
-              if (state is AvailableSlotsLoading) const Center(child: CircularProgressIndicator()) else if (state is AvailableSlotsLoaded) _buildSlotsGrid(state.slots),
+              if (state is AvailableSlotsLoading)
+                const Center(child: CircularProgressIndicator())
+              else if (state is AvailableSlotsLoaded)
+                _buildSlotsGrid(state.slots)
+              else if (state is AppointmentError)
+                Center(child: Text(state.message)), // Mostra o erro se a busca de slots falhar
 
               const SizedBox(height: 40),
-              // Botão para confirmar o agendamento.
               ElevatedButton(
                 onPressed: _selectedSlot != null && state is! AppointmentLoading ? _submitAppointment : null,
                 style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
@@ -222,7 +203,6 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
-  // Constrói o menu suspenso para selecionar terapeutas.
   Widget _buildTherapistSelector(List<TherapistConfigEntity> therapists) {
     return DropdownButtonFormField<TherapistConfigEntity>(
       value: _selectedTherapist,
@@ -236,7 +216,6 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
-  // Constrói a grade de horários disponíveis.
   Widget _buildSlotsGrid(List<String> slots) {
     if (slots.isEmpty) {
       return const Center(
@@ -263,7 +242,6 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
-  // Constrói o conteúdo da aba "Plano Terapêutico" (ainda um placeholder).
   Widget _buildPlanoTerapeuticoTab() {
     return const Center(
       child: Padding(
