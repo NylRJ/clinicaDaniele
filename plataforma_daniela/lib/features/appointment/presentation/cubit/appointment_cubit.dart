@@ -12,8 +12,13 @@ class AppointmentCubit extends Cubit<AppointmentState> {
   AppointmentCubit({required this.repository}) : super(const AppointmentInitial());
 
   Future<void> fetchTherapists() async {
+    // 1. Emite o estado de carregamento
     emit(const AppointmentLoading());
+
+    // 2. Chama o repositório
     final result = await repository.getTherapists();
+
+    // 3. Emite sucesso ou erro com base no resultado
     result.fold((failure) => emit(AppointmentError(message: failure.message)), (therapists) => emit(TherapistsLoaded(therapists)));
   }
 
