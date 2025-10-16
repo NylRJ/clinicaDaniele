@@ -1,6 +1,7 @@
 // ARQUIVO: lib/features/appointment/presentation/cubit/appointment_state.dart
 
 import 'package:equatable/equatable.dart';
+import 'package:plataforma_daniela/features/appointment/domain/entities/appointment_entity.dart';
 // Corrigido para importar a ENTIDADE em vez do MODELO
 import 'package:plataforma_daniela/features/appointment/domain/entities/therapist_config_entity.dart';
 
@@ -50,4 +51,12 @@ class AppointmentError extends AppointmentState {
 
   @override
   List<Object?> get props => [message];
+}
+
+class PatientAppointmentsLoaded extends AppointmentState {
+  final List<AppointmentEntity> appointments;
+  const PatientAppointmentsLoaded(this.appointments);
+
+  @override
+  List<Object?> get props => [appointments];
 }

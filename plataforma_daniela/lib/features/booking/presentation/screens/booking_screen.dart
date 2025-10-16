@@ -19,19 +19,23 @@ class BookingScreen extends StatefulWidget {
 }
 
 class _BookingScreenState extends State<BookingScreen> {
-  // Variáveis para guardar as seleções do usuário.
   TherapistConfigEntity? _selectedTherapist;
   DateTime _selectedDay = DateTime.now();
   String? _selectedSlot;
-
-  // <-- MUDANÇA AQUI (1/3): Cache local para a lista de terapeutas.
-  // Esta lista vai "lembrar" dos terapeutas mesmo quando o estado do Cubit mudar.
   List<TherapistConfigEntity> _therapists = [];
+
+  // Variável para guardar os agendamentos do paciente
+  List<AppointmentEntity> _myAppointments = [];
 
   @override
   void initState() {
     super.initState();
-    context.read<AppointmentCubit>().fetchTherapists();
+    final authState = context.read<AuthCubit>().state;
+    if (authState is Authenticated) {
+      // Inicia a busca por terapeutas E a observação dos agendamentos do paciente.
+      context.read<AppointmentCubit>().fetchTherapists();
+      context.read<AppointmentCubit>().watchPatientAppointments(authState.user.uid);
+    }
   }
 
   void _onTherapistChanged(TherapistConfigEntity? therapist) {
@@ -80,6 +84,36 @@ class _BookingScreenState extends State<BookingScreen> {
     }
   }
 
+  // NOVA FUNÇÃO PARA CANCELAR
+  void _cancelAppointment(AppointmentEntity appointment) {
+    // Regra de negócio: 48 horas de antecedência
+    if (appointment.startTime.difference(DateTime.now()).inHours < 48) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Cancelamentos devem ser feitos com 48h de antecedência.'), backgroundColor: Colors.orange));
+      return;
+    }
+
+    // Popup de confirmação
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Confirmar Cancelamento'),
+        content: const Text('Tem certeza que deseja cancelar esta consulta?'),
+        actions: [
+          TextButton(child: const Text('Não'), onPressed: () => Navigator.of(ctx).pop()),
+          TextButton(
+            child: const Text('Sim, cancelar'),
+            onPressed: () {
+              context.read<AppointmentCubit>().cancelAppointment(appointment.id);
+              // Após cancelar, atualiza a lista de horários disponíveis
+              _fetchSlots();
+              Navigator.of(ctx).pop();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -92,64 +126,54 @@ class _BookingScreenState extends State<BookingScreen> {
           title: BlocBuilder<AuthCubit, AuthState>(
             builder: (context, state) {
               if (state is Authenticated) {
-                return Text(
-                  'Olá, ${state.user.name}',
-                  style: const TextStyle(color: BrandColors.charcoal, fontWeight: FontWeight.bold, fontSize: 18),
-                );
+                return Text('Olá, ${state.user.name}');
               }
-              return const Text(
-                'Minha Área',
-                style: TextStyle(color: BrandColors.charcoal, fontWeight: FontWeight.bold),
-              );
+              return const Text('Minha Área');
             },
           ),
           actions: [
             IconButton(
               icon: const Icon(Icons.logout, color: BrandColors.charcoal),
-              onPressed: () async {
+              onPressed: () {
                 context.read<AuthCubit>().signOut();
-                if (mounted) {
-                  Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-                }
+                Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
               },
             ),
           ],
           bottom: const TabBar(
-            labelColor: BrandColors.charcoal,
-            unselectedLabelColor: BrandColors.slate,
-            indicatorColor: BrandColors.gold,
             tabs: [
-              Tab(text: 'Agendamento'),
-              Tab(text: 'Plano Terapêutico'),
+              Tab(text: 'Novo Agendamento'),
+              Tab(text: 'Meus Agendamentos'), // ABA ATUALIZADA
             ],
           ),
         ),
-        body: Stack(
-          children: [
-            const Positioned.fill(child: AppBackground()),
-            TabBarView(children: [_buildAgendamentoTab(), _buildPlanoTerapeuticoTab()]),
-          ],
+        body: BlocListener<AppointmentCubit, AppointmentState>(
+          // Listener genérico para erros e sucesso
+          listener: (context, state) {
+            if (state is AppointmentError) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message), backgroundColor: Colors.red));
+            }
+            if (state is AppointmentCreated) {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Consulta agendada com sucesso!'), backgroundColor: Colors.green));
+              setState(() => _selectedSlot = null);
+              _fetchSlots(); // Atualiza a grade de horários
+            }
+          },
+          child: TabBarView(
+            children: [
+              _buildNewAppointmentTab(), // Função renomeada
+              _buildMyApointmentsTab(), // NOVA ABA
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildAgendamentoTab() {
-    return BlocConsumer<AppointmentCubit, AppointmentState>(
-      listener: (context, state) {
-        if (state is AppointmentError) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message), backgroundColor: Colors.red));
-        }
-        if (state is AppointmentCreated) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Consulta agendada com sucesso!'), backgroundColor: Colors.green));
-          setState(() {
-            _selectedSlot = null;
-          });
-          _fetchSlots();
-        }
-      },
+  // Função renomeada
+  Widget _buildNewAppointmentTab() {
+    return BlocBuilder<AppointmentCubit, AppointmentState>(
       builder: (context, state) {
-        // <-- MUDANÇA AQUI (2/3): Atualiza a lista de cache quando o estado certo chega.
         if (state is TherapistsLoaded) {
           _therapists = state.therapists;
         }
@@ -159,17 +183,8 @@ class _BookingScreenState extends State<BookingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // <-- MUDANÇA AQUI (3/3): Lógica de renderização melhorada.
-              // Mostra o loading apenas se a lista de cache AINDA estiver vazia.
-              if (state is AppointmentLoading && _therapists.isEmpty)
-                const Center(child: CircularProgressIndicator())
-              else
-                // Sempre usa a lista de cache para construir o dropdown,
-                // garantindo que ele nunca fique vazio após o primeiro carregamento.
-                _buildTherapistSelector(_therapists),
-
+              if (state is AppointmentLoading && _therapists.isEmpty) const Center(child: CircularProgressIndicator()) else _buildTherapistSelector(_therapists),
               const SizedBox(height: 20),
-
               ListTile(
                 title: Text('Data Selecionada: ${DateFormat('dd/MM/yyyy').format(_selectedDay)}'),
                 trailing: const Icon(Icons.calendar_today),
@@ -180,24 +195,50 @@ class _BookingScreenState extends State<BookingScreen> {
                   }
                 },
               ),
-
               const SizedBox(height: 20),
-
-              if (state is AvailableSlotsLoading)
-                const Center(child: CircularProgressIndicator())
-              else if (state is AvailableSlotsLoaded)
-                _buildSlotsGrid(state.slots)
-              else if (state is AppointmentError)
-                Center(child: Text(state.message)), // Mostra o erro se a busca de slots falhar
-
+              if (state is AvailableSlotsLoading) const Center(child: CircularProgressIndicator()) else if (state is AvailableSlotsLoaded) _buildSlotsGrid(state.slots),
               const SizedBox(height: 40),
-              ElevatedButton(
-                onPressed: _selectedSlot != null && state is! AppointmentLoading ? _submitAppointment : null,
-                style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
-                child: state is AppointmentLoading && state is! AvailableSlotsLoading ? const CircularProgressIndicator(color: Colors.white) : const Text('Confirmar Agendamento'),
-              ),
+              ElevatedButton(onPressed: _selectedSlot != null && state is! AppointmentLoading ? _submitAppointment : null, child: const Text('Confirmar Agendamento')),
             ],
           ),
+        );
+      },
+    );
+  }
+
+  // NOVA FUNÇÃO PARA CONSTRUIR A ABA "MEUS AGENDAMENTOS"
+  Widget _buildMyApointmentsTab() {
+    return BlocBuilder<AppointmentCubit, AppointmentState>(
+      builder: (context, state) {
+        // Atualiza a lista local quando o estado certo chega do listener
+        if (state is PatientAppointmentsLoaded) {
+          _myAppointments = state.appointments;
+        }
+
+        if (_myAppointments.isEmpty) {
+          return const Center(child: Text('Você não possui agendamentos futuros.'));
+        }
+
+        return ListView.builder(
+          itemCount: _myAppointments.length,
+          itemBuilder: (context, index) {
+            final appointment = _myAppointments[index];
+            final canCancel = appointment.startTime.difference(DateTime.now()).inHours >= 48;
+            return Card(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: ListTile(
+                title: Text('Consulta com ${appointment.therapistName}'),
+                subtitle: Text(DateFormat('dd/MM/yyyy \'às\' HH:mm').format(appointment.startTime)),
+                trailing: Tooltip(
+                  message: canCancel ? 'Cancelar agendamento' : 'Cancelamento não permitido (menos de 48h)',
+                  child: IconButton(
+                    icon: Icon(Icons.cancel, color: canCancel ? Colors.red : Colors.grey),
+                    onPressed: canCancel ? () => _cancelAppointment(appointment) : null,
+                  ),
+                ),
+              ),
+            );
+          },
         );
       },
     );
@@ -207,7 +248,6 @@ class _BookingScreenState extends State<BookingScreen> {
     return DropdownButtonFormField<TherapistConfigEntity>(
       value: _selectedTherapist,
       hint: const Text('Selecione um terapeuta'),
-      isExpanded: true,
       onChanged: _onTherapistChanged,
       items: therapists.map((therapist) {
         return DropdownMenuItem(value: therapist, child: Text(therapist.therapistName));
@@ -218,18 +258,13 @@ class _BookingScreenState extends State<BookingScreen> {
 
   Widget _buildSlotsGrid(List<String> slots) {
     if (slots.isEmpty) {
-      return const Center(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text('Nenhum horário disponível para esta data.', textAlign: TextAlign.center),
-        ),
-      );
+      return const Center(child: Text('Nenhum horário disponível para esta data.'));
     }
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4, mainAxisSpacing: 8, crossAxisSpacing: 8, childAspectRatio: 2.5),
       itemCount: slots.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4, mainAxisSpacing: 8, crossAxisSpacing: 8),
       itemBuilder: (context, index) {
         final slot = slots[index];
         final isSelected = slot == _selectedSlot;
@@ -242,28 +277,8 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
+  // O antigo "Plano Terapêutico" pode ser removido ou mantido conforme sua preferência.
   Widget _buildPlanoTerapeuticoTab() {
-    return const Center(
-      child: Padding(
-        padding: EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.assignment_outlined, size: 60, color: BrandColors.slate),
-            SizedBox(height: 16),
-            Text(
-              'O seu Plano Terapêutico',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: BrandColors.charcoal),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Neste espaço, encontrará o seu plano de tratamento, materiais e poderá interagir com o seu terapeuta.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, color: BrandColors.slate),
-            ),
-          ],
-        ),
-      ),
-    );
+    return const Center(child: Text('Plano Terapêutico (em breve)'));
   }
 }

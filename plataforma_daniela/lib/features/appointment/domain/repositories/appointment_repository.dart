@@ -8,9 +8,13 @@ import 'package:plataforma_daniela/features/appointment/domain/entities/therapis
 abstract class AppointmentRepository {
   Future<Either<Failure, List<TherapistConfigEntity>>> getTherapists();
 
-  Future<Either<Failure, List<String>>> getAvailableSlots({required String therapistId, required DateTime date});
+  Stream<Either<Failure, List<String>>> getAvailableSlots({required String therapistId, required DateTime date});
 
   Future<Either<Failure, void>> createAppointment({required AppointmentEntity appointment});
 
   Future<Either<Failure, List<AppointmentEntity>>> getAppointmentsForTherapist({required String therapistId, required DateTime date});
+
+  Stream<Either<Failure, List<AppointmentEntity>>> watchAppointmentsForPatient(String patientId);
+
+  Future<Either<Failure, void>> cancelAppointment(String appointmentId);
 }

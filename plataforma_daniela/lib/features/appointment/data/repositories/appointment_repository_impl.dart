@@ -1,5 +1,6 @@
 // ARQUIVO: lib/features/appointment/data/repositories/appointment_repository_impl.dart
 import 'package:dartz/dartz.dart';
+import 'package:intl/intl.dart'; // Import necessário para DateFormat
 import 'package:plataforma_daniela/core/error/exceptions.dart';
 import 'package:plataforma_daniela/core/error/failures.dart';
 import 'package:plataforma_daniela/features/appointment/data/datasources/appointment_firebase_datasource.dart';
@@ -8,18 +9,14 @@ import 'package:plataforma_daniela/features/appointment/domain/entities/appointm
 import 'package:plataforma_daniela/features/appointment/domain/entities/therapist_config_entity.dart';
 import 'package:plataforma_daniela/features/appointment/domain/repositories/appointment_repository.dart';
 
-// Esta classe é a implementação do "contrato" definido em AppointmentRepository.
-// Ela é a ponte entre a lógica de negócio (domínio) e a fonte de dados (Firebase).
 class AppointmentRepositoryImpl implements AppointmentRepository {
   final AppointmentFirebaseDataSource appointmentFirebaseDataSource;
 
   AppointmentRepositoryImpl({required this.appointmentFirebaseDataSource});
 
-  // Função para criar um novo agendamento.
   @override
   Future<Either<Failure, void>> createAppointment({required AppointmentEntity appointment}) async {
     try {
-      // Converte a entidade (objeto de negócio) para um modelo (objeto de dados).
       final appointmentModel = AppointmentModel(
         id: appointment.id,
         patientId: appointment.patientId,
@@ -30,45 +27,56 @@ class AppointmentRepositoryImpl implements AppointmentRepository {
         endTime: appointment.endTime,
         status: appointment.status,
       );
-      // Chama a fonte de dados para salvar no Firestore.
       await appointmentFirebaseDataSource.createAppointment(appointment: appointmentModel);
-      // Retorna sucesso (Right).
       return const Right(null);
     } on ServerException {
-      // Se a fonte de dados lançar um erro, ele é capturado e transformado em uma "Falha".
       return Left(const ServerFailure(message: 'Ocorreu um erro ao criar o agendamento.'));
     }
   }
 
-  // Função para buscar os horários disponíveis.
+  // <-- MÉTODO ALTERADO PARA USAR STREAM -->
   @override
-  Future<Either<Failure, List<String>>> getAvailableSlots({required String therapistId, required DateTime date}) async {
+  Stream<Either<Failure, List<String>>> getAvailableSlots({required String therapistId, required DateTime date}) {
     try {
-      // 1. Busca a configuração do terapeuta (horários de trabalho).
-      final therapists = await appointmentFirebaseDataSource.getTherapists();
-      final therapistConfig = therapists.firstWhere((t) => t.therapistId == therapistId);
+      // 1. Busca a configuração do terapeuta (isso continua sendo uma busca única).
+      final therapistConfigFuture = appointmentFirebaseDataSource.getTherapists();
 
-      // 2. Busca os agendamentos já existentes para o dia.
-      final bookedAppointments = await appointmentFirebaseDataSource.getBookedAppointments(therapistId: therapistId, date: date);
-      final bookedSlots = bookedAppointments.map((e) => '${e.startTime.hour.toString().padLeft(2, '0')}:${e.startTime.minute.toString().padLeft(2, '0')}').toSet();
+      // 2. Ouve a stream de agendamentos ocupados em tempo real.
+      return appointmentFirebaseDataSource
+          .getBookedAppointmentsStream(therapistId: therapistId, date: date)
+          .asyncMap((bookedAppointments) async {
+            try {
+              // 3. Resolve a busca pela configuração do terapeuta.
+              final therapists = await therapistConfigFuture;
+              final therapistConfig = therapists.firstWhere((t) => t.therapistId == therapistId);
 
-      // 3. Determina o dia da semana para buscar na disponibilidade.
-      final dayOfWeek = _getDayOfWeek(date.weekday);
-      final workingSlots = therapistConfig.weeklyAvailability[dayOfWeek] ?? [];
+              // 4. Mapeia os horários já ocupados para um formato simples (ex: "10:00").
+              final bookedSlots = bookedAppointments.map((e) => DateFormat('HH:mm').format(e.startTime)).toSet();
 
-      // 4. Filtra os horários de trabalho, removendo os que já estão ocupados.
-      final availableSlots = workingSlots.where((slot) => !bookedSlots.contains(slot)).toList();
+              // 5. Determina o dia da semana para buscar os horários de trabalho.
+              final dayOfWeek = _getDayOfWeek(date.weekday);
+              final workingSlots = therapistConfig.weeklyAvailability[dayOfWeek] ?? [];
 
-      return Right(availableSlots);
-    } on ServerException {
-      return Left(const ServerFailure(message: 'Não foi possível buscar os horários.'));
+              // 6. Filtra os horários de trabalho, removendo os que já estão ocupados.
+              final availableSlots = workingSlots.where((slot) => !bookedSlots.contains(slot)).toList();
+
+              // 7. Retorna a lista de horários disponíveis.
+              return Right<Failure, List<String>>(availableSlots);
+            } catch (e) {
+              // Captura erros como "terapeuta não encontrado".
+              return Left<Failure, List<String>>(const ServerFailure(message: 'Configuração do terapeuta não encontrada.'));
+            }
+          })
+          .handleError((error) {
+            // Trata erros que possam ocorrer na stream (ex: falha de permissão).
+            return Left<Failure, List<String>>(const ServerFailure(message: 'Não foi possível buscar os horários.'));
+          });
     } catch (e) {
-      // Captura outros erros (ex: terapeuta não encontrado) e retorna uma falha.
-      return Left(const ServerFailure(message: 'Configuração do terapeuta não encontrada.'));
+      // Captura erros na chamada inicial e retorna uma stream com um único erro.
+      return Stream.value(Left(const ServerFailure(message: 'Erro ao iniciar a busca por horários.')));
     }
   }
 
-  // Função para buscar a lista de todos os terapeutas.
   @override
   Future<Either<Failure, List<TherapistConfigEntity>>> getTherapists() async {
     try {
@@ -79,7 +87,6 @@ class AppointmentRepositoryImpl implements AppointmentRepository {
     }
   }
 
-  // Função para buscar os agendamentos de um terapeuta específico em uma data.
   @override
   Future<Either<Failure, List<AppointmentEntity>>> getAppointmentsForTherapist({required String therapistId, required DateTime date}) async {
     try {
@@ -90,7 +97,33 @@ class AppointmentRepositoryImpl implements AppointmentRepository {
     }
   }
 
-  // Função auxiliar para converter o número do dia da semana (1-7) para o nome em inglês usado no Firestore.
+  @override
+  Stream<Either<Failure, List<AppointmentEntity>>> watchAppointmentsForPatient(String patientId) {
+    try {
+      return appointmentFirebaseDataSource
+          .getAppointmentsForPatient(patientId)
+          .map((appointments) {
+            return Right<Failure, List<AppointmentEntity>>(appointments);
+          })
+          .handleError((error) {
+            print("Erro na stream de agendamentos do paciente: $error");
+            return Left<Failure, List<AppointmentEntity>>(const ServerFailure(message: 'Não foi possível buscar seus agendamentos.'));
+          });
+    } catch (e) {
+      return Stream.value(Left<Failure, List<AppointmentEntity>>(ServerFailure(message: e.toString())));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> cancelAppointment(String appointmentId) async {
+    try {
+      await appointmentFirebaseDataSource.deleteAppointment(appointmentId);
+      return const Right(null);
+    } on ServerException {
+      return Left(const ServerFailure(message: 'Ocorreu um erro ao cancelar o agendamento.'));
+    }
+  }
+
   String _getDayOfWeek(int day) {
     switch (day) {
       case 1:

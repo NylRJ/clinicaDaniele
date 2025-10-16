@@ -1,19 +1,3 @@
-/**
- * // ARQUIVO: lib/features/therapist_dashboard/presentation/cubit/therapist_agenda_state.dart
- *
- * // OBJETIVO: Definir os estados da UI para a agenda do terapeuta.
- *
- * // REQUISITOS:
- * // - Classe abstrata `TherapistAgendaState` com Equatable.
- * // - Estados concretos:
- * //   - `TherapistAgendaInitial`: Estado inicial.
- * //   - `TherapistAgendaLoading`: Carregando os agendamentos.
- * //   - `TherapistAgendaLoaded`: Agendamentos carregados com sucesso. Deve conter `final List<AppointmentEntity> appointments`.
- * //   - `TherapistAgendaError`: Erro ao carregar. Deve conter `final String message`.
- *
- * // INSTRUÇÕES PARA A IA: Gere o código para os estados abaixo.
- */
-
 import 'package:equatable/equatable.dart';
 
 import '../../../appointment/domain/entities/appointment_entity.dart';
@@ -47,4 +31,3 @@ class TherapistAgendaError extends TherapistAgendaState {
   @override
   List<Object?> get props => [message];
 }
-
