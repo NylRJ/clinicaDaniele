@@ -28,6 +28,9 @@ final class AppointmentModel extends AppointmentEntity {
   }
 
   Map<String, dynamic> toJson() {
-    return {'id': id, 'patientId': patientId, 'patientName': patientName, 'therapistId': therapistId, 'therapistName': therapistName, 'startTime': Timestamp.fromDate(startTime), 'endTime': Timestamp.fromDate(endTime), 'status': status};
+    // CORREÇÃO APLICADA AQUI: O 'id' não é mais incluído no JSON.
+    // O Firestore irá gerar o ID do documento automaticamente,
+    // e o nosso `fromSnapshot` já o lê corretamente.
+    return {'patientId': patientId, 'patientName': patientName, 'therapistId': therapistId, 'therapistName': therapistName, 'startTime': Timestamp.fromDate(startTime), 'endTime': Timestamp.fromDate(endTime), 'status': status};
   }
 }
