@@ -92,14 +92,30 @@ class AppointmentFirebaseDataSourceImpl implements AppointmentFirebaseDataSource
   @override
   Stream<List<AppointmentModel>> getAppointmentsForPatient(String patientId) {
     try {
-      print("[DataSource] Observando agendamentos para o paciente $patientId");
+      print("[DataSource] Observando agendamentos FUTUROS para o paciente $patientId");
       return firestore
           .collection('agendas')
           .where('patientId', isEqualTo: patientId)
-          .where('startTime', isGreaterThanOrEqualTo: Timestamp.now())
-          .orderBy('startTime')
+          // .where('startTime', isGreaterThanOrEqualTo: Timestamp.now()) // <-- COMENTE OU REMOVA ESTA LINHA TEMPORARIAMENTE
+          .orderBy('startTime') // Mantenha a ordenação
           .snapshots()
-          .map((snapshot) => snapshot.docs.map((doc) => AppointmentModel.fromSnapshot(doc)).toList());
+          // Adicionamos logs dentro do .map para ver os dados recebidos
+          .map((snapshot) {
+            // *** NOVO LOG 1 ***
+            print("[DataSource] Stream recebeu ${snapshot.docs.length} documentos do Firestore.");
+
+            final appointments = snapshot.docs.map((doc) {
+              final model = AppointmentModel.fromSnapshot(doc);
+              // *** NOVO LOG 2 ***
+              // Imprime o ID do documento e o startTime de cada agendamento recebido
+              print("[DataSource] Mapeando Doc ID ${doc.id}: startTime=${model.startTime}");
+              return model;
+            }).toList();
+
+            // *** NOVO LOG 3 ***
+            print("[DataSource] Lista mapeada final tem ${appointments.length} agendamentos.");
+            return appointments;
+          });
     } catch (e) {
       print("########## ERRO AO OBSERVAR AGENDAMENTOS DO PACIENTE ##########");
       print("Erro: $e");

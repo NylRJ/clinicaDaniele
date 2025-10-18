@@ -1,0 +1,30 @@
+:root{
+  --brand:#6EE7B7; --bg:#FFFFFF; --bgMuted:#F3F4F6; --text:#111827; --textMuted:#6B7280; --border:#E5E7EB;
+  --shadow-card:0 1px 2px rgba(0,0,0,.06); --shadow-raised:0 4px 12px rgba(0,0,0,.08);
+  --dur-fast:180ms; --dur:220ms; --ease:cubic-bezier(.2,0,0,1);
+}
+body.dark{
+  --bg:#0B0F0E; --bgMuted:#111827; --text:#F9FAFB; --textMuted:#9CA3AF; --border:#1F2937;
+  --shadow-card:0 1px 2px rgba(0,0,0,.5); --shadow-raised:0 6px 20px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 Inter, Poppins, system-ui}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);}
+.logo{font-weight:600}
+.btn{background:var(--brand);color:#0B0F0E;border:none;border-radius:12px;padding:10px 14px;cursor:pointer;transition:transform var(--dur) var(--ease), filter var(--dur) var(--ease)}
+.btn.secondary{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn:hover{transform:translateY(-1px)} .btn:active{transform:translateY(0)}
+.link{color:var(--textMuted);cursor:pointer}
+.screen{display:none; padding:24px; animation: fade var(--dur) var(--ease) both}
+.screen.visible{display:block}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:16px 0}
+.card{background:var(--bgMuted);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-card);padding:16px}
+.lift{transition:box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease)}
+.lift:hover{box-shadow:var(--shadow-raised);transform:translateY(-2px)}
+.hoverable{transition:background var(--dur) var(--ease)} .hoverable:hover{background:rgba(110,231,183,.12)}
+.row{display:flex;gap:8px;align-items:center;margin-top:12px}
+.list{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+label{display:block;margin:8px 0 4px;color:var(--textMuted)} input{width:100%;padding:10px;border:1px solid var(--border);border-radius:12px;background:transparent;color:var(--text)}
+h1,h2{margin:0 0 12px 0}
+.fade-in{animation: fade var(--dur) var(--ease) both}
+@keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:translateY(0)}}
+@media (max-width:900px){ .grid{grid-template-columns:1fr} .screen{padding:16px} }

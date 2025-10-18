@@ -41,7 +41,17 @@ class AppointmentCubit extends Cubit<AppointmentState> {
   void watchPatientAppointments(String patientId) {
     _patientAppointmentsSubscription?.cancel();
     _patientAppointmentsSubscription = repository.watchAppointmentsForPatient(patientId).listen((result) {
-      result.fold((failure) => emit(AppointmentError(message: failure.message)), (appointments) => emit(PatientAppointmentsLoaded(appointments)));
+      result.fold((failure) => emit(AppointmentError(message: failure.message)), (appointments) {
+        // *** NOVO LOG 4 ***
+        // Imprime quantos agendamentos o Cubit recebeu antes de emitir o estado
+        print("[Cubit] Recebeu ${appointments.length} agendamentos do repositório.");
+
+        // Opcional: Descomente as linhas abaixo se quiser ver os horários também no Cubit
+        // print("[Cubit] Detalhes dos agendamentos recebidos:");
+        // appointments.forEach((app) => print("[Cubit]  - ${app.startTime}"));
+
+        emit(PatientAppointmentsLoaded(appointments));
+      });
     });
   }
 

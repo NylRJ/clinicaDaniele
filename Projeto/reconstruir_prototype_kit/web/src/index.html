@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reconstruir Prototype</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="bg">
+    <nav class="topbar">
+      <div class="logo">🧠 Reconstruir</div>
+      <div class="actions">
+        <button class="btn secondary">Notificações</button>
+        <button class="btn">Perfil</button>
+        <button class="btn" onclick="toggleTheme()">Tema</button>
+      </div>
+    </nav>
+    <main id="app">
+      <section class="screen visible" id="login">
+        <div class="card fade-in">
+          <h1>Entrar</h1>
+          <label>E-mail</label><input placeholder="email@dominio.com"/>
+          <label>Senha</label><input type="password" placeholder="••••••••"/>
+          <div class="row">
+            <button class="btn" onclick="go('dashboard')">Entrar</button>
+            <button class="btn secondary" onclick="go('dashboard')">Entrar com Google</button>
+          </div>
+          <a class="link" onclick="go('recuperar')">Esqueci minha senha</a>
+        </div>
+      </section>
+      <section class="screen" id="dashboard">
+        <h2 class="fade-in">Dashboard – Admin</h2>
+        <div class="grid">
+          <div class="metric card lift">Sessões do dia: 12</div>
+          <div class="metric card lift">Faturamento (R$): 4.230</div>
+          <div class="metric card lift">Pacientes ativos: 86</div>
+        </div>
+        <div class="row">
+          <button class="btn" onclick="go('agendaTerapeuta')">Agenda Terapeuta</button>
+          <button class="btn secondary" onclick="go('agendamentoRecepcao')">Agendamento Recepção</button>
+        </div>
+      </section>
+      <section class="screen" id="agendaTerapeuta">
+        <h2 class="fade-in">Agenda – Terapeuta</h2>
+        <div class="list">
+          <div class="item card hoverable">09:00 • Ana • Cognitiva • Sala 1</div>
+          <div class="item card hoverable">10:00 • João • Hipnose • Sala 2</div>
+          <div class="item card hoverable">11:00 • Bia • Mindfulness • Sala 3</div>
+        </div>
+        <div class="row">
+          <button class="btn" onclick="go('novaSessao')">+ Nova Sessão</button>
+          <button class="btn secondary" onclick="go('dashboard')">Voltar</button>
+        </div>
+      </section>
+      <section class="screen" id="agendamentoRecepcao">
+        <h2 class="fade-in">Agendamento – Recepção</h2>
+        <div class="card">
+          <label>Paciente</label><input placeholder="Nome"/>
+          <label>Terapeuta</label><input placeholder="Selecione"/>
+          <label>Data</label><input type="date"/>
+          <label>Hora</label><input type="time"/>
+          <div class="row">
+            <button class="btn">Salvar</button>
+            <button class="btn secondary" onclick="go('dashboard')">Voltar</button>
+          </div>
+        </div>
+      </section>
+      <section class="screen" id="recuperar">
+        <div class="card fade-in">
+          <h2>Recuperar senha</h2>
+          <label>E-mail</label><input placeholder="email@dominio.com"/>
+          <div class="row">
+            <button class="btn">Enviar link</button>
+            <button class="btn secondary" onclick="go('login')">Voltar</button>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script>
+      const modes = { light: true };
+      function go(id){
+        document.querySelectorAll('.screen').forEach(s=>s.classList.remove('visible'));
+        document.getElementById(id).classList.add('visible');
+      }
+      function toggleTheme(){
+        document.body.classList.toggle('dark');
+      }
+    </script>
+  </body>
+</html>
